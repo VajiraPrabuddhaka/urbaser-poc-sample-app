@@ -28,6 +28,15 @@ public record BinDetail(
     IList<FillLevelReadingDto> RecentReadings
 );
 
+public record CreateBinRequest(
+    string Name,
+    string Location,
+    double Latitude,
+    double Longitude,
+    string Type,
+    double CapacityLiters
+);
+
 public record FillLevelReadingDto(
     double FillLevel,
     double? Temperature,

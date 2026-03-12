@@ -41,6 +41,26 @@
           }
         },
         {
+          "name": "Create Bin",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/bins",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bins"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"BIN-013\",\n  \"location\": \"Oak Ave & 3rd St\",\n  \"latitude\": 40.7150,\n  \"longitude\": -74.0080,\n  \"type\": \"Recycling\",\n  \"capacityLiters\": 1100\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a new waste bin. Type: General | Recycling | Organic | Glass | Paper. New bin starts Active with 0% fill level."
+          }
+        },
+        {
           "name": "List Bins — Filter by Type",
           "request": {
             "method": "GET",

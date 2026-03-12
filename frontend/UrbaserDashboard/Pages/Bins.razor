@@ -8,6 +8,57 @@
 
 <h1 class="page-title">Waste Bins</h1>
 
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Add New Bin</span>
+    </div>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" @bind="_newName" placeholder="e.g. BIN-013" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-control" @bind="_newLocation" placeholder="e.g. Oak Ave & 3rd St" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Type</label>
+                <select class="form-control" @bind="_newType">
+                    <option>General</option>
+                    <option>Recycling</option>
+                    <option>Organic</option>
+                    <option>Glass</option>
+                    <option>Paper</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Capacity (L)</label>
+                <input type="number" class="form-control" @bind="_newCapacity" min="50" max="5000" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Latitude</label>
+                <input type="number" class="form-control" @bind="_newLatitude" step="0.0001" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Longitude</label>
+                <input type="number" class="form-control" @bind="_newLongitude" step="0.0001" />
+            </div>
+            <div class="form-group" style="justify-content:flex-end">
+                <button class="btn btn-primary"
+                        @onclick="CreateBinAsync"
+                        disabled="@(string.IsNullOrWhiteSpace(_newName) || string.IsNullOrWhiteSpace(_newLocation))">
+                    Add Bin
+                </button>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(_createMessage))
+        {
+            <p style="color: @(_createError ? "var(--red)" : "var(--green-mid)"); font-size:13px;">@_createMessage</p>
+        }
+    </div>
+</div>
+
 <div class="form-row">
     <div class="form-group">
         <label class="form-label">Filter by Type</label>
@@ -82,6 +133,16 @@
     private string _filterType = "";
     private string? _error;
 
+    // Create form fields
+    private string _newName = "";
+    private string _newLocation = "";
+    private string _newType = "General";
+    private double _newCapacity = 1100;
+    private double _newLatitude = 0;
+    private double _newLongitude = 0;
+    private string? _createMessage;
+    private bool _createError;
+
     protected override async Task OnInitializedAsync() => await LoadBinsAsync();
 
     private async Task LoadBinsAsync()
@@ -95,6 +156,38 @@
         catch (Exception ex)
         {
             _error = ex.Message;
+        }
+    }
+
+    private async Task CreateBinAsync()
+    {
+        _createMessage = null;
+        var req = new CreateBinRequest(_newName.Trim(), _newLocation.Trim(), _newLatitude, _newLongitude, _newType, _newCapacity);
+        try
+        {
+            var response = await BinSvc.CreateBinAsync(req);
+            if (response.IsSuccessStatusCode)
+            {
+                _createError = false;
+                _createMessage = $"Bin '{_newName}' created successfully!";
+                _newName = "";
+                _newLocation = "";
+                _newLatitude = 0;
+                _newLongitude = 0;
+                _newCapacity = 1100;
+                _newType = "General";
+                await LoadBinsAsync();
+            }
+            else
+            {
+                _createError = true;
+                _createMessage = $"Failed to create bin (HTTP {(int)response.StatusCode}).";
+            }
+        }
+        catch (Exception ex)
+        {
+            _createError = true;
+            _createMessage = $"Error: {ex.Message}";
         }
     }
 

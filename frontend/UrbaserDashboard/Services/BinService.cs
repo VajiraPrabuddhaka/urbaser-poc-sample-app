@@ -23,4 +23,7 @@ public class BinService
 
     public async Task<IList<FillLevelReadingDto>?> GetBinReadingsAsync(int id, int hours = 24) =>
         await _http.GetFromJsonAsync<IList<FillLevelReadingDto>>($"api/bins/{id}/readings?hours={hours}");
+
+    public async Task<HttpResponseMessage> CreateBinAsync(CreateBinRequest req) =>
+        await _http.PostAsJsonAsync("api/bins", req);
 }

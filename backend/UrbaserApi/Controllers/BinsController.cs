@@ -79,6 +79,41 @@ public class BinsController : ControllerBase
         return Ok(detail);
     }
 
+    [HttpPost]
+    public async Task<ActionResult<BinSummary>> CreateBin([FromBody] CreateBinRequest req)
+    {
+        if (!Enum.TryParse<BinType>(req.Type, true, out var binType))
+            return BadRequest($"Invalid bin type '{req.Type}'. Valid values: General, Recycling, Organic, Glass, Paper.");
+
+        var now = DateTime.UtcNow;
+        var bin = new WasteBin
+        {
+            Name = req.Name,
+            Location = req.Location,
+            Latitude = req.Latitude,
+            Longitude = req.Longitude,
+            Type = binType,
+            Status = BinStatus.Active,
+            CapacityLiters = req.CapacityLiters,
+            CurrentFillLevel = 0,
+            LastCollected = now,
+            LastSensorReading = now,
+            InstalledDate = now
+        };
+
+        _db.WasteBins.Add(bin);
+        await _db.SaveChangesAsync();
+
+        _logger.LogInformation("CreateBin: Created BinId={BinId}, Name={Name}, Type={Type}, Location={Location}",
+            bin.Id, bin.Name, bin.Type, bin.Location);
+
+        var summary = new BinSummary(
+            bin.Id, bin.Name, bin.Location, bin.Type.ToString(), bin.Status.ToString(),
+            bin.CurrentFillLevel, bin.CapacityLiters, bin.LastCollected, bin.LastSensorReading);
+
+        return CreatedAtAction(nameof(GetBin), new { id = bin.Id }, summary);
+    }
+
     [HttpGet("{id:int}/readings")]
     public async Task<ActionResult<IList<FillLevelReadingDto>>> GetBinReadings(int id, [FromQuery] int hours = 24)
     {
