@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/UrbaserApi/UrbaserApi.csproj" />
+  </Folder>
+  <Folder Name="/frontend/">
+    <Project Path="frontend/UrbaserDashboard/UrbaserDashboard.csproj" />
+  </Folder>
+</Solution>
