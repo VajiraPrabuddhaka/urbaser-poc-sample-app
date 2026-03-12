@@ -27,7 +27,7 @@ The system simulates a city's waste management operations: IoT sensors on waste 
 │                          │         │   ├─ OpenTelemetry (traces)      │
 │                          │         │   └─ Custom Metrics (OTLP)       │
 │                          │         │                                  │
-│                          │         │  SQLite + EF Core                │
+│                          │         │  SQLite / PostgreSQL + EF Core   │
 │                          │         │  localhost:5230                  │
 └──────────────────────────┘         └──────────────────────────────────┘
 ```
@@ -234,11 +234,40 @@ frontend/
 
 ## Database
 
-SQLite is used for simplicity — no setup required. The database file (`backend/UrbaserApi/urbaser.db`) is created automatically on first run using `EnsureCreated()`. There are no EF Core migrations.
+The backend supports **SQLite** (default) and **PostgreSQL**. The provider is controlled by the `DatabaseProvider` key in `appsettings.json`. There are no EF Core migrations — the schema is created automatically via `EnsureCreated()` on first run.
 
-To reset to a clean state with fresh seed data, delete the database file and restart the backend:
+### SQLite (default)
+
+No setup required. The database file (`backend/UrbaserApi/urbaser.db`) is created automatically.
+
+To reset to a clean state with fresh seed data, delete the file and restart:
 
 ```bash
 rm backend/UrbaserApi/urbaser.db
 dotnet run --project backend/UrbaserApi/
 ```
+
+### PostgreSQL
+
+Set `DatabaseProvider` to `postgres` and configure `PostgresConnection` in `backend/UrbaserApi/appsettings.json`:
+
+```json
+{
+  "DatabaseProvider": "postgres",
+  "ConnectionStrings": {
+    "PostgresConnection": "Host=localhost;Port=5432;Database=urbaser;Username=urbaser;Password=urbaser123"
+  }
+}
+```
+
+Or use environment variables (no file changes needed):
+
+```bash
+DatabaseProvider=postgres \
+ConnectionStrings__PostgresConnection="Host=localhost;Port=5432;Database=urbaser;Username=myuser;Password=mypass" \
+dotnet run --project backend/UrbaserApi/
+```
+
+The schema and seed data are created automatically on first run. To re-seed, drop and recreate the database, then restart the backend.
+
+For a quick local PostgreSQL instance using Docker, see [docs/postgres-docker.md](docs/postgres-docker.md).

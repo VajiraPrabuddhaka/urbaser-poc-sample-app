@@ -26,8 +26,18 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // --- Database ---
-builder.Services.AddDbContext<UrbaserDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=urbaser.db"));
+var dbProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "sqlite";
+if (dbProvider.Equals("postgres", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddDbContext<UrbaserDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")
+            ?? "Host=localhost;Port=5432;Database=urbaser;Username=postgres;Password=postgres"));
+}
+else
+{
+    builder.Services.AddDbContext<UrbaserDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=urbaser.db"));
+}
 
 // --- CORS ---
 builder.Services.AddCors(options =>
