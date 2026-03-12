@@ -1,0 +1,16 @@
+# OpenChoreo Workload Descriptor — Backend API
+# This file defines how the backend workload exposes endpoints and connects to other services.
+# It sits alongside the source code and gets converted to a Workload CR during the build workflow.
+apiVersion: openchoreo.dev/v1alpha1
+
+metadata:
+  name: urbaser-api
+
+endpoints:
+  - name: rest
+    port: 8080
+    type: REST
+    basePath: /api
+    visibility:
+      - project
+      - external

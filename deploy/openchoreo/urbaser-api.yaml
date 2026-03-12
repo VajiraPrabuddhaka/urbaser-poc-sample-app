@@ -1,0 +1,50 @@
+# OpenChoreo Component — Backend API (Service)
+# Built from source using Google Cloud Buildpacks (.NET)
+apiVersion: openchoreo.dev/v1alpha1
+kind: Component
+metadata:
+  name: urbaser-api
+spec:
+  owner:
+    projectName: default
+
+  componentType:
+    kind: ComponentType
+    name: deployment/service
+
+  autoDeploy: true
+
+  workflow:
+    name: google-cloud-buildpacks
+
+    parameters:
+      scope:
+        projectName: "default"
+        componentName: "urbaser-api"
+      repository:
+        url: "https://github.com/<YOUR_ORG>/urbaser-poc-sample-app"
+        revision:
+          branch: "main"
+        appPath: "/backend/UrbaserApi"
+
+---
+apiVersion: openchoreo.dev/v1alpha1
+kind: WorkflowRun
+metadata:
+  name: urbaser-api-build-01
+  labels:
+    openchoreo.dev/project: "default"
+    openchoreo.dev/component: "urbaser-api"
+spec:
+  workflow:
+    name: google-cloud-buildpacks
+
+    parameters:
+      scope:
+        projectName: "default"
+        componentName: "urbaser-api"
+      repository:
+        url: "https://github.com/<YOUR_ORG>/urbaser-poc-sample-app"
+        revision:
+          branch: "main"
+        appPath: "/backend/UrbaserApi"

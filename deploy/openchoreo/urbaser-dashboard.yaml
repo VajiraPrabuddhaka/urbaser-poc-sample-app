@@ -1,0 +1,56 @@
+# OpenChoreo Component — Frontend Dashboard (Web Application)
+# Built from source using Docker workflow (Blazor WASM + nginx)
+apiVersion: openchoreo.dev/v1alpha1
+kind: Component
+metadata:
+  name: urbaser-dashboard
+spec:
+  owner:
+    projectName: default
+
+  componentType:
+    kind: ComponentType
+    name: deployment/web-application
+
+  autoDeploy: true
+
+  workflow:
+    name: docker
+
+    parameters:
+      scope:
+        projectName: "default"
+        componentName: "urbaser-dashboard"
+      repository:
+        url: "https://github.com/<YOUR_ORG>/urbaser-poc-sample-app"
+        revision:
+          branch: "main"
+        appPath: "/frontend/UrbaserDashboard"
+      docker:
+        context: "/frontend/UrbaserDashboard"
+        filePath: "/frontend/UrbaserDashboard/Dockerfile"
+
+---
+apiVersion: openchoreo.dev/v1alpha1
+kind: WorkflowRun
+metadata:
+  name: urbaser-dashboard-build-01
+  labels:
+    openchoreo.dev/project: "default"
+    openchoreo.dev/component: "urbaser-dashboard"
+spec:
+  workflow:
+    name: docker
+
+    parameters:
+      scope:
+        projectName: "default"
+        componentName: "urbaser-dashboard"
+      repository:
+        url: "https://github.com/<YOUR_ORG>/urbaser-poc-sample-app"
+        revision:
+          branch: "main"
+        appPath: "/frontend/UrbaserDashboard"
+      docker:
+        context: "/frontend/UrbaserDashboard"
+        filePath: "/frontend/UrbaserDashboard/Dockerfile"
