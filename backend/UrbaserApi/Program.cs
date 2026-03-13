@@ -69,14 +69,12 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddEntityFrameworkCoreInstrumentation()
-        .AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint))
-        .AddConsoleExporter())
+        .AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint)))
     .WithMetrics(metrics => metrics
         .AddMeter(UrbaserMetrics.MeterName)
         .AddAspNetCoreInstrumentation()
         .AddRuntimeInstrumentation()
-        .AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint))
-        .AddConsoleExporter());
+        .AddOtlpExporter(o => o.Endpoint = new Uri(otlpEndpoint)));
 
 // --- Kestrel port ---
 builder.WebHost.UseUrls("http://0.0.0.0:5230");
