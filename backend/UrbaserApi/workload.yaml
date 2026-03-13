@@ -14,3 +14,7 @@ endpoints:
     visibility:
       - project
       - external
+
+env:
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: "http://opentelemetry-collector.openchoreo-observability-plane.svc.cluster.local:4317"
