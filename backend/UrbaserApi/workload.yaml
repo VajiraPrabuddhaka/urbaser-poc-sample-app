@@ -10,7 +10,7 @@ endpoints:
   - name: rest
     port: 8080
     type: REST
-    basePath: /api
+    basePath: /
     visibility:
       - project
       - external
