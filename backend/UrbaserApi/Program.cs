@@ -79,7 +79,7 @@ builder.Services.AddOpenTelemetry()
         .AddConsoleExporter());
 
 // --- Kestrel port ---
-builder.WebHost.UseUrls("http://localhost:5230");
+builder.WebHost.UseUrls("http://0.0.0.0:5230");
 
 var app = builder.Build();
 
