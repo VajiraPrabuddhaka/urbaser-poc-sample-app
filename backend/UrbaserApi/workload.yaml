@@ -8,7 +8,7 @@ metadata:
 
 endpoints:
   - name: rest
-    port: 8080
+    port: 5230
     type: REST
     basePath: /
     visibility:
