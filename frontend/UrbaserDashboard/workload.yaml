@@ -13,10 +13,3 @@ endpoints:
     visibility:
       - external
 
-connections:
-  - component: urbaser-api
-    endpoint: rest
-    visibility: project
-    envBindings:
-      host: BACKEND_API_HOST
-      port: BACKEND_API_PORT
